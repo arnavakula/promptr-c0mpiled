@@ -34,9 +34,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.api.routes.debug_ws import router as debug_router  # noqa: E402
+from app.api.routes.projects import router as projects_router  # noqa: E402
+from app.api.routes.users import router as users_router  # noqa: E402
+
 app.include_router(auth_router)
+app.include_router(debug_router)
+app.include_router(projects_router)
+app.include_router(users_router)
 
 
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "service": settings.APP_NAME}
+
+
+# ─── Mount Socket.IO ────────────────────────────────────────────
+from app.websocket.socket_manager import socket_app  # noqa: E402
+
+app.mount("/ws", socket_app)
