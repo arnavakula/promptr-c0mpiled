@@ -179,6 +179,11 @@ def process_user_response(self, project_id: int, answers: str) -> dict:
 
         state = _state_from_project(project)
 
+        # The API endpoint sets status to "planning" for UI feedback,
+        # but the orchestrator expects "awaiting_answers" — restore it.
+        if state.status == WorkflowStatus.PLANNING:
+            state.status = WorkflowStatus.AWAITING_ANSWERS
+
         orch = Orchestrator()
         state = orch.submit_answers(state, answers)
 

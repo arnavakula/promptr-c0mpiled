@@ -16,8 +16,9 @@ class ProjectResponse(BaseModel):
     initial_idea: str
     status: str
     current_stage: str | None
+    workflow_data: dict[str, Any] | None = None
     spec_md: str | None
-    final_prompts: dict | None
+    final_prompts: list[dict[str, Any]] | None
     refinement_count: int
     max_refinements: int
     created_at: datetime
