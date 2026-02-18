@@ -34,7 +34,7 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       DEBUG: "false"
-      CORS_ORIGINS: '["https://promptr.com"]'
+      CORS_ORIGINS: '["https://promptrcloud.com"]'
     depends_on:
       postgres:
         condition: service_healthy
@@ -66,7 +66,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
-        NEXT_PUBLIC_API_URL: https://api.promptr.com
+        NEXT_PUBLIC_API_URL: https://api.promptrcloud.com
     restart: unless-stopped
 
   caddy:
