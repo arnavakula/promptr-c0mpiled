@@ -3,16 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useProjects } from "@/hooks/useProjects";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -32,7 +22,7 @@ export default function NewProjectPage() {
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { detail?: string } } })?.response?.data
-          ?.detail || "Failed to create project";
+          ?.detail || "Failed to create project. Please try again.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -41,55 +31,64 @@ export default function NewProjectPage() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <Card>
-        <CardHeader>
-          <CardTitle>New Project</CardTitle>
-          <CardDescription>
-            Describe your app idea and we&apos;ll generate tailored prompts for
-            AI coding assistants.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <p className="text-sm text-red-500 text-center">{error}</p>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="title">Project Title</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="My Fitness App"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="idea">Describe your idea</Label>
-              <textarea
-                id="idea"
-                value={idea}
-                onChange={(e) => setIdea(e.target.value)}
-                placeholder="I want to build a fitness tracking app that lets users log workouts, track calories, and see progress charts..."
-                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                required
-              />
-            </div>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Creating..." : "Create Project"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <div className="mb-8">
+        <h1 className="text-[22px] text-gray-900">New project</h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Describe your app idea and we&apos;ll generate tailored prompts for AI coding assistants.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <p className="text-sm text-red-600">{error}</p>
+        )}
+
+        <div className="space-y-1.5">
+          <label htmlFor="title" className="block text-xs font-medium uppercase tracking-wide text-gray-500">
+            Project title
+          </label>
+          <input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            placeholder="My Fitness App"
+            required
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="idea" className="block text-xs font-medium uppercase tracking-wide text-gray-500">
+            Describe your idea
+          </label>
+          <textarea
+            id="idea"
+            value={idea}
+            onChange={(e) => setIdea(e.target.value)}
+            rows={5}
+            className="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm leading-relaxed text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            placeholder="I want to build a fitness tracking app that lets users log workouts, track calories, and see progress charts..."
+            required
+          />
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50 active:scale-[0.98]"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-blue-600 active:scale-[0.98] disabled:opacity-50"
+          >
+            {loading ? "Creating..." : "Create project"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

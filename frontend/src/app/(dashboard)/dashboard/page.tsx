@@ -2,61 +2,62 @@
 
 import { useRouter } from "next/navigation";
 import { useProjects, type Project } from "@/hooks/useProjects";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
-const STATUS_COLORS: Record<string, string> = {
-  eliciting: "bg-blue-100 text-blue-700",
-  awaiting_answers: "bg-yellow-100 text-yellow-700",
-  planning: "bg-purple-100 text-purple-700",
-  synthesizing: "bg-indigo-100 text-indigo-700",
-  critiquing: "bg-orange-100 text-orange-700",
-  completed: "bg-green-100 text-green-700",
-  failed: "bg-red-100 text-red-700",
+const STATUS_META: Record<string, { color: string; label: string }> = {
+  eliciting: { color: "bg-blue-500", label: "Generating questions" },
+  awaiting_answers: { color: "bg-amber-500", label: "Awaiting answers" },
+  planning: { color: "bg-violet-500", label: "Building architecture" },
+  awaiting_approval: { color: "bg-violet-500", label: "Awaiting approval" },
+  synthesizing: { color: "bg-indigo-500", label: "Writing prompts" },
+  critiquing: { color: "bg-orange-500", label: "Reviewing" },
+  refining: { color: "bg-orange-500", label: "Refining" },
+  completed: { color: "bg-emerald-500", label: "Completed" },
+  failed: { color: "bg-red-500", label: "Failed" },
 };
-
-function StatusBadge({ status }: { status: string }) {
-  const color = STATUS_COLORS[status] ?? "bg-gray-100 text-gray-700";
-  return (
-    <span
-      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${color}`}
-    >
-      {status.replace(/_/g, " ")}
-    </span>
-  );
-}
 
 function ProjectCard({ project }: { project: Project }) {
   const router = useRouter();
+  const meta = STATUS_META[project.status] ?? { color: "bg-gray-400", label: project.status };
 
   return (
-    <Card
-      className="cursor-pointer transition-colors hover:bg-muted/50"
+    <button
       onClick={() => router.push(`/projects/${project.id}`)}
+      className="group w-full rounded-xl bg-white p-6 text-left shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
     >
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between">
-          <CardTitle className="text-base">{project.title}</CardTitle>
-          <StatusBadge status={project.status} />
+      <div className="flex items-start justify-between">
+        <h3 className="text-[15px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
+          {project.title}
+        </h3>
+        <div className="flex items-center gap-1.5 shrink-0 ml-3">
+          <span className={`h-1.5 w-1.5 rounded-full ${meta.color}`} />
+          <span className="text-xs text-gray-500">{meta.label}</span>
         </div>
-        <CardDescription className="line-clamp-2">
-          {project.initial_idea}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-xs text-muted-foreground">
-          Created {new Date(project.created_at).toLocaleDateString()}
-          {project.completed_at &&
-            ` · Completed ${new Date(project.completed_at).toLocaleDateString()}`}
-        </p>
-      </CardContent>
-    </Card>
+      </div>
+      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500">
+        {project.initial_idea}
+      </p>
+      <p className="mt-4 text-xs text-gray-400">
+        {new Date(project.created_at).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      </p>
+    </button>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <div className="rounded-xl bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+      <div className="flex items-start justify-between">
+        <div className="skeleton h-4 w-36" />
+        <div className="skeleton h-3 w-20" />
+      </div>
+      <div className="skeleton mt-3 h-3 w-full" />
+      <div className="skeleton mt-2 h-3 w-2/3" />
+      <div className="skeleton mt-4 h-3 w-16" />
+    </div>
   );
 }
 
@@ -66,33 +67,45 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Projects</h1>
-          <p className="text-sm text-muted-foreground">
-            Your AI prompt generation projects
+          <h1 className="text-[22px] text-gray-900">Projects</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Your prompt generation projects
           </p>
         </div>
-        <Button onClick={() => router.push("/projects/new")}>
-          New Project
-        </Button>
+        <button
+          onClick={() => router.push("/projects/new")}
+          className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-blue-600 active:scale-[0.98]"
+        >
+          New project
+        </button>
       </div>
 
       {isLoading ? (
-        <p className="text-muted-foreground">Loading projects...</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
       ) : projects.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="mb-4 text-muted-foreground">
-              No projects yet. Create your first one to get started.
-            </p>
-            <Button onClick={() => router.push("/projects/new")}>
-              Create Project
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center py-20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+            <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+            </svg>
+          </div>
+          <h3 className="mt-4 text-sm font-medium text-gray-900">No projects yet</h3>
+          <p className="mt-1 text-sm text-gray-500">Create your first project to get started.</p>
+          <button
+            onClick={() => router.push("/projects/new")}
+            className="mt-5 rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-blue-600 active:scale-[0.98]"
+          >
+            New project
+          </button>
+        </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           {projects.map((p) => (
             <ProjectCard key={p.id} project={p} />
           ))}

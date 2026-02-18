@@ -17,6 +17,17 @@ export interface Project {
   created_at: string;
   updated_at: string;
   completed_at: string | null;
+  workflow_data?: {
+    questions?: Array<{
+      number: number;
+      topic: string;
+      text: string;
+      options: string[];
+    }>;
+    tech_stack?: Record<string, string[]>;
+    error?: string;
+    [key: string]: unknown;
+  } | null;
 }
 
 const fetcher = (url: string) => api.get(url).then((r) => r.data);
