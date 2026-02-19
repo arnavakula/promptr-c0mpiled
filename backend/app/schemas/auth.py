@@ -1,17 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr
-
-
-class UserCreate(BaseModel):
-    email: str
-    password: str
-    full_name: str
-
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
+from pydantic import BaseModel
 
 
 class UserResponse(BaseModel):
@@ -24,8 +13,3 @@ class UserResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str = "bearer"

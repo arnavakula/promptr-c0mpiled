@@ -63,6 +63,8 @@ def create_project(
         user_id=user.id,
         title=body.title,
         initial_idea=body.initial_idea,
+        project_type=body.project_type,
+        codebase_context=body.codebase_context,
         status="eliciting",
     )
     db.add(project)

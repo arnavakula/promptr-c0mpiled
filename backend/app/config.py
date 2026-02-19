@@ -17,10 +17,20 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
 
+    # Google OAuth
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    GOOGLE_REDIRECT_URI: str = "http://localhost:8000/api/auth/google/callback"
+
     # App
     APP_NAME: str = "Promptr"
     DEBUG: bool = False
+    FRONTEND_URL: str = "http://localhost:3000"
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+
+    # Email restrictions
+    ALLOWED_EMAIL_DOMAIN: str = "ucdavis.edu"
+    EMAIL_WHITELIST: list[str] = []  # external emails allowed regardless of domain
 
     # Rate Limits
     MAX_USERS: int = 80

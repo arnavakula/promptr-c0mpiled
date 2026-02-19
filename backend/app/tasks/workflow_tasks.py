@@ -35,6 +35,8 @@ def _state_from_project(project: Project) -> WorkflowState:
     return WorkflowState(
         status=WorkflowStatus(project.status),
         idea=project.initial_idea,
+        project_type=getattr(project, "project_type", "build") or "build",
+        codebase_context=getattr(project, "codebase_context", "") or "",
         questions=wd.get("questions", []),
         user_answers=wd.get("user_answers", ""),
         spec_md=project.spec_md or "",
@@ -142,7 +144,11 @@ def start_project_workflow(self, project_id: int) -> dict:
         logger.info("Starting workflow for project %d: %s", project_id, project.title)
 
         orch = Orchestrator()
-        state = orch.start_workflow(project.initial_idea)
+        state = orch.start_workflow(
+            project.initial_idea,
+            project_type=getattr(project, "project_type", "build") or "build",
+            codebase_context=getattr(project, "codebase_context", "") or "",
+        )
 
         _save_state(db, project, state)
 

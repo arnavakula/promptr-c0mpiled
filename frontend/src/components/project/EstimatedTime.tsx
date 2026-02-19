@@ -32,25 +32,56 @@ function formatTime(seconds: number): string {
   return `~${s}s remaining`;
 }
 
-export function EstimatedTime({ status }: { status: string }) {
+function getStorageKey(projectId: number, status: string) {
+  return `promptr_timer_${projectId}_${status}`;
+}
+
+function getRemaining(projectId: number, status: string): number {
   const estimate = STAGE_ESTIMATES[status];
-  const [remaining, setRemaining] = useState(estimate?.total ?? 0);
-  const startRef = useRef(status);
+  if (!estimate) return 0;
+
+  try {
+    const stored = localStorage.getItem(getStorageKey(projectId, status));
+    if (stored) {
+      const { startedAt, total } = JSON.parse(stored);
+      const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+      return Math.max(0, total - elapsed);
+    }
+  } catch {
+    // ignore
+  }
+
+  // First time seeing this stage — persist start time
+  localStorage.setItem(
+    getStorageKey(projectId, status),
+    JSON.stringify({ startedAt: Date.now(), total: estimate.total }),
+  );
+  return estimate.total;
+}
+
+export function EstimatedTime({
+  status,
+  projectId,
+}: {
+  status: string;
+  projectId: number;
+}) {
+  const estimate = STAGE_ESTIMATES[status];
+  const [remaining, setRemaining] = useState(() =>
+    getRemaining(projectId, status),
+  );
+  const prevStatus = useRef(status);
   const currentIdx = STAGE_INDEX[status] ?? -1;
 
+  // When status changes, compute remaining from persisted start time
   useEffect(() => {
-    if (status !== startRef.current) {
-      startRef.current = status;
-      const est = STAGE_ESTIMATES[status];
-      if (est) setRemaining(est.total);
+    if (status !== prevStatus.current) {
+      prevStatus.current = status;
+      setRemaining(getRemaining(projectId, status));
     }
-  }, [status]);
+  }, [status, projectId]);
 
-  useEffect(() => {
-    const est = STAGE_ESTIMATES[status];
-    if (est) setRemaining(est.total);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  // Countdown interval
   useEffect(() => {
     if (!estimate) return;
     const interval = setInterval(() => {
