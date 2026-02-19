@@ -35,6 +35,12 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       DEBUG: "false"
       CORS_ORIGINS: '["https://promptrcloud.com"]'
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      FRONTEND_URL: https://promptrcloud.com
+      ALLOWED_EMAIL_DOMAIN: ucdavis.edu
+      EMAIL_WHITELIST: ${EMAIL_WHITELIST:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,6 +59,7 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      FRONTEND_URL: https://promptrcloud.com
       DEBUG: "false"
     depends_on:
       postgres:
