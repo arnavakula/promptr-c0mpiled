@@ -8,7 +8,7 @@ from app.utils.llm_client import CLAUDE_SONNET
 logger = logging.getLogger(__name__)
 
 # Required sections in spec.md (## header text, case-insensitive substring match)
-REQUIRED_SECTIONS = [
+REQUIRED_SECTIONS_BUILD = [
     "What You're Building",
     "Who It's For",
     "Core Features",
@@ -17,6 +17,19 @@ REQUIRED_SECTIONS = [
     "How Your Data Works",
     "Build Stages",
 ]
+
+REQUIRED_SECTIONS_OTHER = [
+    "Current State & Goal",
+    "Core Features",
+    "Implementation Stages",
+    "Affected Areas",
+]
+
+
+def get_required_sections(project_type: str) -> list[str]:
+    if project_type == "build":
+        return REQUIRED_SECTIONS_BUILD
+    return REQUIRED_SECTIONS_OTHER
 
 
 @dataclass
@@ -87,11 +100,12 @@ def parse_tech_stack(spec_md: str) -> TechStack:
     return stack
 
 
-def validate_sections(spec_md: str) -> list[str]:
+def validate_sections(spec_md: str, project_type: str = "build") -> list[str]:
     """Return list of required section names missing from the spec."""
+    required = get_required_sections(project_type)
     lower = spec_md.lower()
     missing = []
-    for section in REQUIRED_SECTIONS:
+    for section in required:
         # Look for "## <section>" allowing flexible whitespace
         if re.search(rf"##\s+{re.escape(section.lower())}", lower) is None:
             # Also try without apostrophe variants
@@ -126,8 +140,13 @@ class ArchitectAgent(BaseAgent):
         """
         idea = input_data["idea"]
         qa = input_data.get("questions_and_answers", "")
+        project_type = input_data.get("project_type", "build")
+        codebase_context = input_data.get("codebase_context", "")
 
-        user_message = f"## Original Idea\n{idea}\n\n## User's Answers to Clarifying Questions\n{qa}"
+        user_message = f"[Project Type: {project_type}]\n\n"
+        if codebase_context:
+            user_message += f"[Codebase Context: {codebase_context}]\n\n"
+        user_message += f"## Original Idea\n{idea}\n\n## User's Answers to Clarifying Questions\n{qa}"
 
         result: AgentResult = self._call_llm(
             user_message=user_message,
@@ -145,7 +164,7 @@ class ArchitectAgent(BaseAgent):
             spec_md = spec_md[:-3].rstrip()
 
         tech_stack = parse_tech_stack(spec_md)
-        missing = validate_sections(spec_md)
+        missing = validate_sections(spec_md, project_type)
 
         if missing:
             logger.warning("Architect spec is missing sections: %s", missing)

@@ -11,6 +11,8 @@ import {
 import { createElement } from "react";
 import api from "@/lib/api-client";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 interface User {
   id: number;
   email: string;
@@ -22,8 +24,8 @@ interface AuthContextValue {
   user: User | null;
   token: string | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, fullName: string) => Promise<void>;
+  loginWithGoogle: () => void;
+  handleCallback: (token: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -52,29 +54,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const res = await api.post("/api/auth/login", { email, password });
-    const { access_token } = res.data;
-    localStorage.setItem("token", access_token);
-    setToken(access_token);
+  const loginWithGoogle = useCallback(() => {
+    window.location.href = `${API_URL}/api/auth/google`;
+  }, []);
+
+  const handleCallback = useCallback(async (jwtToken: string) => {
+    localStorage.setItem("token", jwtToken);
+    setToken(jwtToken);
     const me = await api.get("/api/auth/me", {
-      headers: { Authorization: `Bearer ${access_token}` },
+      headers: { Authorization: `Bearer ${jwtToken}` },
     });
     setUser(me.data);
   }, []);
-
-  const register = useCallback(
-    async (email: string, password: string, fullName: string) => {
-      await api.post("/api/auth/register", {
-        email,
-        password,
-        full_name: fullName,
-      });
-      // Auto-login after registration
-      await login(email, password);
-    },
-    [login],
-  );
 
   const logout = useCallback(() => {
     localStorage.removeItem("token");
@@ -84,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return createElement(
     AuthContext.Provider,
-    { value: { user, token, loading, login, register, logout } },
+    { value: { user, token, loading, loginWithGoogle, handleCallback, logout } },
     children,
   );
 }

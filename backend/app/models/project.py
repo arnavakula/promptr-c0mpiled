@@ -14,6 +14,8 @@ class Project(Base):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     initial_idea: Mapped[str] = mapped_column(Text, nullable=False)
+    project_type: Mapped[str] = mapped_column(String(50), default="build", nullable=False)
+    codebase_context: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(
         String(50), default="eliciting", nullable=False
     )  # eliciting, planning, synthesizing, critiquing, completed, failed

@@ -78,6 +78,12 @@ export default function ProjectPage() {
             {project.title}
           </h1>
           <p className="mt-1 text-sm text-gray-500">{project.initial_idea}</p>
+          {project.codebase_context && (
+            <p className="mt-2 text-xs text-gray-400">
+              <span className="font-medium text-gray-500">Codebase:</span>{" "}
+              {project.codebase_context}
+            </p>
+          )}
         </div>
 
         {/* Mobile stepper */}
@@ -90,7 +96,7 @@ export default function ProjectPage() {
           <div className="flex flex-col items-center gap-4 rounded-xl bg-white py-16 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500" />
             <p className="text-sm text-gray-500">
-              Analyzing your idea and generating questions...
+              Analyzing your request and generating questions...
             </p>
           </div>
         )}
@@ -125,7 +131,10 @@ export default function ProjectPage() {
                 <p className="text-sm text-gray-500">
                   Building your app&apos;s architecture...
                 </p>
-                <EstimatedTime status={status} />
+                <EstimatedTime status={status} projectId={projectId} />
+                <p className="mt-3 text-xs text-gray-400">
+                  Feel free to leave this page — your project will keep processing in the background.
+                </p>
               </div>
             )}
           </>
@@ -139,7 +148,10 @@ export default function ProjectPage() {
               {status === "critiquing" && "Reviewing prompt quality..."}
               {status === "refining" && "Refining prompts based on review..."}
             </p>
-            <EstimatedTime status={status} />
+            <EstimatedTime status={status} projectId={projectId} />
+            <p className="mt-1 text-xs text-gray-400">
+              Feel free to leave this page — your project will keep processing in the background.
+            </p>
           </div>
         )}
 

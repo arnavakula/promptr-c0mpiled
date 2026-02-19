@@ -102,7 +102,13 @@ class ElicitorAgent(BaseAgent):
             ElicitorResult with parsed questions and token usage.
         """
         idea = input_data["idea"]
-        user_message = f"User's app idea: {idea}"
+        project_type = input_data.get("project_type", "build")
+        codebase_context = input_data.get("codebase_context", "")
+
+        user_message = f"[Project Type: {project_type}]\n\n"
+        if codebase_context:
+            user_message += f"[Codebase Context: {codebase_context}]\n\n"
+        user_message += f"User's idea: {idea}"
 
         result: AgentResult = self._call_llm(
             user_message=user_message,

@@ -45,7 +45,7 @@ eliciting → awaiting_answers → planning → awaiting_approval → synthesizi
 
 | Agent | File | Model | Role |
 |-------|------|-------|------|
-| Elicitor | `agents/elicitor.py` | claude-3-5-haiku-latest | Generates clarifying questions |
+| Elicitor | `agents/elicitor.py` | claude-haiku-4-5-20251001 | Generates clarifying questions |
 | Architect | `agents/architect.py` | claude-sonnet-4-20250514 | Creates spec.md from answers |
 | Synthesizer | `agents/synthesizer.py` | claude-sonnet-4-20250514 | Transforms spec into sequential prompts |
 | Critic | `agents/critic.py` | gpt-4o-mini | Quality audit (different provider to reduce bias) |

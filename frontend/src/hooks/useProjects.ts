@@ -8,6 +8,8 @@ export interface Project {
   user_id: number;
   title: string;
   initial_idea: string;
+  project_type: string;
+  codebase_context: string | null;
   status: string;
   current_stage: string | null;
   spec_md: string | null;
@@ -39,10 +41,17 @@ export function useProjects() {
     { refreshInterval: 5000 },
   );
 
-  const createProject = async (title: string, initialIdea: string) => {
+  const createProject = async (
+    title: string,
+    initialIdea: string,
+    projectType: string = "build",
+    codebaseContext?: string,
+  ) => {
     const res = await api.post("/api/projects", {
       title,
       initial_idea: initialIdea,
+      project_type: projectType,
+      ...(codebaseContext ? { codebase_context: codebaseContext } : {}),
     });
     await mutate();
     return res.data as Project;

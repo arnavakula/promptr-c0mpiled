@@ -3,8 +3,8 @@ from app.utils.llm_client import CLAUDE_HAIKU, CLAUDE_SONNET, GPT_4O_MINI
 # Pricing per 1M tokens (USD)
 MODEL_PRICING: dict[str, dict[str, float]] = {
     CLAUDE_HAIKU: {
-        "input": 0.80,
-        "output": 4.00,
+        "input": 1.00,
+        "output": 5.00,
     },
     CLAUDE_SONNET: {
         "input": 3.00,

@@ -45,6 +45,8 @@ class WorkflowState:
     """Full mutable state of a project workflow."""
     status: WorkflowStatus = WorkflowStatus.ELICITING
     idea: str = ""
+    project_type: str = "build"
+    codebase_context: str = ""
     questions: list[dict] = field(default_factory=list)
     user_answers: str = ""
     spec_md: str = ""
@@ -101,19 +103,23 @@ class Orchestrator:
 
     # ─── Workflow steps ──────────────────────────────────────────
 
-    def start_workflow(self, idea: str) -> WorkflowState:
+    def start_workflow(self, idea: str, project_type: str = "build", codebase_context: str = "") -> WorkflowState:
         """Phase 1: Elicitor generates clarifying questions.
 
         Returns state with status AWAITING_ANSWERS.
         """
-        state = WorkflowState(idea=idea, status=WorkflowStatus.ELICITING)
+        state = WorkflowState(idea=idea, project_type=project_type, codebase_context=codebase_context, status=WorkflowStatus.ELICITING)
         self._emit("progress_update", {
             "stage": "eliciting",
-            "message": "Analyzing your idea and preparing questions...",
+            "message": "Analyzing your request and preparing questions...",
         })
 
         try:
-            result: ElicitorResult = self.elicitor.execute({"idea": idea})
+            result: ElicitorResult = self.elicitor.execute({
+                "idea": idea,
+                "project_type": project_type,
+                "codebase_context": codebase_context,
+            })
         except Exception as e:
             return self._fail(state, f"Elicitor failed: {e}")
 
@@ -154,6 +160,8 @@ class Orchestrator:
             result: ArchitectResult = self.architect.execute({
                 "idea": state.idea,
                 "questions_and_answers": answers,
+                "project_type": state.project_type,
+                "codebase_context": state.codebase_context,
             })
         except Exception as e:
             return self._fail(state, f"Architect failed: {e}")
@@ -254,6 +262,8 @@ class Orchestrator:
         try:
             result: SynthesizerResult = self.synthesizer.execute({
                 "spec_md": state.spec_md,
+                "project_type": state.project_type,
+                "codebase_context": state.codebase_context,
             })
         except Exception as e:
             return self._fail(state, f"Synthesizer failed: {e}")

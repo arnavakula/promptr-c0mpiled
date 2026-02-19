@@ -10,7 +10,7 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 # Model ID constants
-CLAUDE_HAIKU = "claude-3-5-haiku-latest"
+CLAUDE_HAIKU = "claude-haiku-4-5-20251001"
 CLAUDE_SONNET = "claude-sonnet-4-20250514"
 GPT_4O_MINI = "gpt-4o-mini"
 
