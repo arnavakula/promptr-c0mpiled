@@ -44,7 +44,7 @@ services:
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
       FRONTEND_URL: https://promptrcloud.com
       ALLOWED_EMAIL_DOMAIN: ucdavis.edu
-      EMAIL_WHITELIST: ${EMAIL_WHITELIST:-}
+      EMAIL_WHITELIST: '[]'
     depends_on:
       postgres:
         condition: service_healthy
