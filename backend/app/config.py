@@ -30,7 +30,7 @@ class Settings(BaseSettings):
 
     # Email restrictions
     ALLOWED_EMAIL_DOMAIN: str = "ucdavis.edu"
-    EMAIL_WHITELIST: list[str] = []  # external emails allowed regardless of domain
+    EMAIL_WHITELIST: list[str] = []
 
     # Rate Limits
     MAX_USERS: int = 80
