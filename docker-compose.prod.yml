@@ -1,6 +1,8 @@
 services:
   postgres:
     image: postgres:15-alpine
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: promptr
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -27,6 +29,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
+    env_file:
+      - .env
     environment:
       DATABASE_URL: postgresql://promptr:${POSTGRES_PASSWORD}@postgres:5432/promptr
       REDIS_URL: redis://redis:6379/0
@@ -40,7 +44,7 @@ services:
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
       FRONTEND_URL: https://promptrcloud.com
       ALLOWED_EMAIL_DOMAIN: ucdavis.edu
-      EMAIL_WHITELIST: ${EMAIL_WHITELIST:-}
+      EMAIL_WHITELIST: '[]'
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,6 +57,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile.prod
     command: celery -A app.tasks.celery_app worker --loglevel=warning --concurrency=2
+    env_file:
+      - .env
     environment:
       DATABASE_URL: postgresql://promptr:${POSTGRES_PASSWORD}@postgres:5432/promptr
       REDIS_URL: redis://redis:6379/0
