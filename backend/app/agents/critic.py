@@ -82,8 +82,10 @@ class CriticAgent(BaseAgent):
         """
         spec_md = input_data["spec_md"]
         prompts_md = input_data["prompts_markdown"]
+        project_type = input_data.get("project_type", "build")
 
         user_message = (
+            f"[Project Type: {project_type}]\n\n"
             f"## Original spec.md\n\n{spec_md}\n\n"
             f"---\n\n"
             f"## Generated Prompts to Audit\n\n{prompts_md}"

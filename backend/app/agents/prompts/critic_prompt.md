@@ -73,10 +73,36 @@ Your task is to audit the prompts and identify:
 - [ ] Code style/patterns are consistent
 - [ ] No contradictory instructions
 
-### 6. Quality (Lazy Output Detection)
-- [ ] Prompts are sufficiently detailed (not suspiciously short)
+### 6. Quality (Type-Aware Assessment)
+
+The user message includes a `[Project Type: ...]` tag. Apply the appropriate quality check:
+
+**build:**
+- [ ] Prompts are sufficiently detailed (not suspiciously short or generic)
 - [ ] Instructions are specific, not generic
 - [ ] Examples or clarifications provided where needed
+
+**enhance:**
+- [ ] Prompts are focused on the feature being added
+- [ ] Flag if more than 3 prompts are generated (over-engineered)
+- [ ] Do not flag conciseness — focused prompts are correct
+
+**refactor:**
+- [ ] Prompts are focused on the specific improvement
+- [ ] Flag if more than 2 prompts are generated (over-engineered)
+- [ ] Do NOT flag conciseness — brevity is correct for refactoring
+
+**debug:**
+- [ ] Prompt is focused on the specific bug
+- [ ] Flag if more than 1 prompt is generated (unless infra changes needed first)
+- [ ] Do NOT flag conciseness — brevity is correct for debugging
+
+### 7. Over-Engineering Detection
+For `enhance`, `refactor`, and `debug` project types, flag as **major** if prompts include unnecessary sections such as:
+- Deployment/hosting setup (unless explicitly requested)
+- Accessibility audits (unless explicitly requested)
+- Polish/animation passes (unless explicitly requested)
+- Full project setup when only a targeted change is needed
 
 ## Output Format
 
@@ -144,7 +170,7 @@ Return your audit in this JSON structure:
 2. **Reference spec** - Always check against the original spec.md
 3. **Focus on actionable issues** - Only flag things that would actually impact code quality
 4. **Don't be pedantic** - Small stylistic differences are okay
-5. **Check for lazy outputs** - If a prompt is suspiciously short or generic, flag it
+5. **Respect project type** - For debug/refactor, concise prompts are correct; only flag shortness for build projects
 
 ## Your Response
 

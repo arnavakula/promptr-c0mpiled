@@ -3,14 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useProjects, type Project } from "@/hooks/useProjects";
 
-const STATUS_META: Record<string, { color: string; label: string }> = {
-  eliciting: { color: "bg-blue-500", label: "Generating questions" },
+const STATUS_META: Record<string, { color: string; label: string; animate?: boolean }> = {
+  eliciting: { color: "bg-blue-500", label: "Generating questions", animate: true },
   awaiting_answers: { color: "bg-amber-500", label: "Awaiting answers" },
-  planning: { color: "bg-violet-500", label: "Building architecture" },
+  planning: { color: "bg-violet-500", label: "Building architecture", animate: true },
   awaiting_approval: { color: "bg-violet-500", label: "Awaiting approval" },
-  synthesizing: { color: "bg-indigo-500", label: "Writing prompts" },
-  critiquing: { color: "bg-orange-500", label: "Reviewing" },
-  refining: { color: "bg-orange-500", label: "Refining" },
+  synthesizing: { color: "bg-indigo-500", label: "Writing prompts", animate: true },
+  critiquing: { color: "bg-orange-500", label: "Reviewing", animate: true },
+  refining: { color: "bg-orange-500", label: "Refining", animate: true },
   completed: { color: "bg-emerald-500", label: "Completed" },
   failed: { color: "bg-red-500", label: "Failed" },
 };
@@ -29,7 +29,11 @@ function ProjectCard({ project }: { project: Project }) {
           {project.title}
         </h3>
         <div className="flex items-center gap-1.5 shrink-0 ml-3">
-          <span className={`h-1.5 w-1.5 rounded-full ${meta.color}`} />
+          <span className={`relative h-1.5 w-1.5 rounded-full ${meta.color}`}>
+            {meta.animate && (
+              <span className={`absolute inset-0 rounded-full ${meta.color} animate-ping opacity-75`} />
+            )}
+          </span>
           <span className="text-xs text-gray-500">{meta.label}</span>
         </div>
       </div>
