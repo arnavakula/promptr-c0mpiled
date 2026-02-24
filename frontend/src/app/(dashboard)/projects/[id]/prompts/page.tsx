@@ -188,7 +188,7 @@ export default function PromptsPage() {
           <div className="mb-4 flex items-center gap-3 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3">
             <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-orange-200 border-t-orange-500" />
             <p className="text-sm text-orange-700">
-              Refining prompt {project.workflow_data?.target_section ? `#${project.workflow_data.target_section}` : ""}...
+              Refining prompt...
               This may take a couple of minutes.
             </p>
           </div>

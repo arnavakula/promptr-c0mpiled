@@ -72,6 +72,12 @@ export default function NewProjectPage() {
     reader.onload = (ev) => {
       setFileContent((ev.target?.result as string) || "");
     };
+    reader.onerror = () => {
+      console.error("Failed to read file with FileReader");
+      setUploadedFile(null);
+      setFileContent("");
+      setError("Failed to read the selected file. Please check the file and try again.");
+    };
     reader.readAsText(file);
   };
 
