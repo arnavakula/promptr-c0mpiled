@@ -289,6 +289,7 @@ class Orchestrator:
                 critique: CriticResult = self.critic.execute({
                     "spec_md": state.spec_md,
                     "prompts_markdown": state.raw_prompts,
+                    "project_type": state.project_type,
                 })
             except Exception as e:
                 return self._fail(state, f"Critic failed: {e}")

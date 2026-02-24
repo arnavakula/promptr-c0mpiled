@@ -18,6 +18,13 @@ Use the modified spec format with these changes:
 - Skip "## Who It's For" if it's obvious from context
 - Keep "## Core Features" but frame as changes/additions rather than full feature list
 
+**Spec length guidance for non-build types:**
+- `debug`: Keep the spec under ~300 words. Focus on the bug, its symptoms, and the fix.
+- `refactor`: Keep the spec under ~500 words. Focus on what changes and why.
+- `enhance`: Keep the spec under ~600 words. Focus on the new feature and integration points.
+
+A shorter, focused spec produces shorter, more focused prompts downstream.
+
 If the user message includes a `[Codebase Context: ...]` section, use that information to ground your spec in their existing codebase.
 
 ## Audience

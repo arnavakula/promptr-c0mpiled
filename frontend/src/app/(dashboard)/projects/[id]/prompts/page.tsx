@@ -24,7 +24,7 @@ export default function PromptsPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = Number(params.id);
-  const { project } = useProject(projectId);
+  const { project, mutate: mutateProject } = useProject(projectId);
 
   const { data: promptsData, mutate: mutatePrompts } = useSWR(
     `/api/projects/${projectId}/prompts`,
@@ -81,8 +81,10 @@ export default function PromptsPage() {
       });
       setRefineSuccess("Refinement started. Prompts will update shortly.");
       setFeedback("");
+      mutateProject();
       setTimeout(() => {
         mutatePrompts();
+        mutateProject();
         setRefineSuccess("");
         setShowRefineModal(false);
       }, 3000);
@@ -163,9 +165,10 @@ export default function PromptsPage() {
               {canRefine && prompts.length > 0 && (
                 <button
                   onClick={() => openRefineModal()}
-                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50 active:scale-[0.98]"
+                  disabled={project.status === "refining"}
+                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Refine
+                  {project.status === "refining" ? "Refining..." : "Refine"}
                 </button>
               )}
               {prompts.length > 0 && (
@@ -179,6 +182,17 @@ export default function PromptsPage() {
             </div>
           </div>
         </div>
+
+        {/* Refining indicator */}
+        {project.status === "refining" && (
+          <div className="mb-4 flex items-center gap-3 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3">
+            <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-orange-200 border-t-orange-500" />
+            <p className="text-sm text-orange-700">
+              Refining prompt...
+              This may take a couple of minutes.
+            </p>
+          </div>
+        )}
 
         {/* Prompts list */}
         {prompts.length === 0 ? (

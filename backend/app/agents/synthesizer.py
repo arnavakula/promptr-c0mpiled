@@ -64,8 +64,16 @@ def parse_prompts(markdown: str) -> list[ParsedPrompt]:
     return prompts
 
 
+MAX_TOKENS_BY_TYPE = {
+    "build": 8192,
+    "enhance": 4096,
+    "refactor": 3072,
+    "debug": 2048,
+}
+
+
 class SynthesizerAgent(BaseAgent):
-    """Prompt Synthesizer agent — transforms spec.md into 5-6 sequential prompts.
+    """Prompt Synthesizer agent — transforms spec.md into sequential prompts.
 
     Uses Claude Sonnet 4 for high-quality prompt generation.
     """
@@ -85,12 +93,19 @@ class SynthesizerAgent(BaseAgent):
             SynthesizerResult with parsed prompts and token usage.
         """
         spec_md = input_data["spec_md"]
+        project_type = input_data.get("project_type", "build")
+        codebase_context = input_data.get("codebase_context", "")
 
-        user_message = f"## Approved spec.md\n\n{spec_md}"
+        user_message = f"[Project Type: {project_type}]\n\n"
+        if codebase_context:
+            user_message += f"[Codebase Context: {codebase_context}]\n\n"
+        user_message += f"## Approved spec.md\n\n{spec_md}"
+
+        max_tokens = MAX_TOKENS_BY_TYPE.get(project_type, 8192)
 
         result: AgentResult = self._call_llm(
             user_message=user_message,
-            max_tokens=8192,
+            max_tokens=max_tokens,
             temperature=0.7,
         )
 
