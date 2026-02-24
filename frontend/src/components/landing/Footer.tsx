@@ -18,14 +18,24 @@ export function Footer() {
           </span>
         </div>
 
-        <motion.a
-          href="https://www.linkedin.com/in/promptr-promptr-39a8b63ab/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-gray-400 hover:text-white transition-colors"
-        >
-          <Linkedin className="w-6 h-6" />
-        </motion.a>
+        <div className="flex items-center gap-4">
+          <a
+            href="https://forms.gle/zz8VNXXwsKJPM12M7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            Feedback
+          </a>
+          <motion.a
+            href="https://www.linkedin.com/in/promptr-promptr-39a8b63ab/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <Linkedin className="w-6 h-6" />
+          </motion.a>
+        </div>
       </div>
     </footer>
   );

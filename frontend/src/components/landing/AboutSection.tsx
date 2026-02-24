@@ -99,6 +99,30 @@ export function AboutSection() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          className="text-center mt-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h3 className="text-2xl sm:text-3xl text-black mb-4">
+            We&apos;d love to hear from you
+          </h3>
+          <p className="text-lg text-gray-500 max-w-xl mx-auto mb-8">
+            Help us improve Promptr by sharing your thoughts, suggestions, or bug reports.
+          </p>
+          <motion.a
+            href="https://forms.gle/zz8VNXXwsKJPM12M7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-8 py-4 bg-black text-white rounded-full text-lg hover:bg-gray-800 transition-colors"
+            whileHover={{ scale: 1.05 }}
+          >
+            Leave Feedback
+          </motion.a>
+        </motion.div>
       </div>
     </section>
   );

@@ -5,7 +5,12 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 
-export function Navigation() {
+interface NavigationProps {
+  variant?: "landing" | "dashboard";
+  onLogout?: () => void;
+}
+
+export function Navigation({ variant = "landing", onLogout }: NavigationProps) {
   const router = useRouter();
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
@@ -35,46 +40,70 @@ export function Navigation() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <button onClick={() => scrollToSection("home")}>
-          <img src="/fullLogo.png" alt="Promptr" className="h-7 sm:h-8" />
-        </button>
+        {variant === "landing" ? (
+          <button onClick={() => scrollToSection("home")}>
+            <img src="/fullLogo.png" alt="Promptr" className="h-7 sm:h-8" />
+          </button>
+        ) : (
+          <button onClick={() => router.push("/dashboard")}>
+            <img src="/fullLogo.png" alt="Promptr" className="h-7 sm:h-8" />
+          </button>
+        )}
 
         <div className="flex items-center gap-6">
-          <button
-            onClick={() => scrollToSection("home")}
-            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            Home
-          </button>
-          <button
-            onClick={() => scrollToSection("about")}
-            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            About
-          </button>
-
-          {!user ? (
+          {variant === "landing" && (
             <>
               <button
-                onClick={() => router.push("/login")}
+                onClick={() => scrollToSection("home")}
                 className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
-                Login
+                Home
               </button>
               <button
-                onClick={() => router.push("/signup")}
-                className="px-6 py-2 bg-black text-white rounded-full text-sm hover:bg-gray-800 transition-colors"
+                onClick={() => scrollToSection("about")}
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
-                Sign Up
+                About
               </button>
             </>
+          )}
+
+          {variant === "landing" ? (
+            !user ? (
+              <>
+                <button
+                  onClick={() => router.push("/login")}
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => router.push("/signup")}
+                  className="px-6 py-2 bg-black text-white rounded-full text-sm hover:bg-gray-800 transition-colors"
+                >
+                  Sign Up
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                {user.email}
+              </button>
+            )
           ) : (
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              {user.email}
-            </button>
+            user && (
+              <>
+                <span className="text-sm text-gray-600">{user.email}</span>
+                <button
+                  onClick={onLogout}
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Log out
+                </button>
+              </>
+            )
           )}
         </div>
       </div>
