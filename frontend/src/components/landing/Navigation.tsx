@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 
 interface NavigationProps {
@@ -12,8 +12,10 @@ interface NavigationProps {
 
 export function Navigation({ variant = "landing", onLogout }: NavigationProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,10 +26,14 @@ export function Navigation({ variant = "landing", onLogout }: NavigationProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  const navigateToSection = (id: string) => {
+    if (isHome) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      router.push(`/#${id}`);
     }
   };
 
@@ -40,12 +46,12 @@ export function Navigation({ variant = "landing", onLogout }: NavigationProps) {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {variant === "landing" ? (
-          <button onClick={() => scrollToSection("home")}>
+        {variant === "dashboard" ? (
+          <button onClick={() => router.push("/dashboard")}>
             <img src="/fullLogo.png" alt="Promptr" className="h-7 sm:h-8" />
           </button>
         ) : (
-          <button onClick={() => router.push("/dashboard")}>
+          <button onClick={() => navigateToSection("home")}>
             <img src="/fullLogo.png" alt="Promptr" className="h-7 sm:h-8" />
           </button>
         )}
@@ -54,13 +60,13 @@ export function Navigation({ variant = "landing", onLogout }: NavigationProps) {
           {variant === "landing" && (
             <>
               <button
-                onClick={() => scrollToSection("home")}
+                onClick={() => navigateToSection("home")}
                 className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
                 Home
               </button>
               <button
-                onClick={() => scrollToSection("about")}
+                onClick={() => navigateToSection("about")}
                 className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
                 About

@@ -2,11 +2,11 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { Navigation } from "@/components/landing/Navigation";
 import { Footer } from "@/components/landing/Footer";
 import { InteractiveGridBackground } from "@/components/ui/InteractiveGridBackground";
+import { AnimatedBlobs } from "@/components/ui/AnimatedBlobs";
 
 function LoginContent() {
   const { loginWithGoogle } = useAuth();
@@ -18,94 +18,7 @@ function LoginContent() {
       <Navigation />
 
       <div className="relative flex flex-1 overflow-hidden">
-        {/* Animated cytoplasm blobs */}
-        <div className="pointer-events-none absolute inset-0 z-0">
-          {/* Large blue-500 / cyan-400 blob */}
-          <motion.div
-            className="absolute h-[550px] w-[550px] rounded-full opacity-30 blur-3xl"
-            style={{
-              top: "5%",
-              left: "10%",
-              background:
-                "radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, rgba(34, 211, 238, 0.3) 40%, transparent 70%)",
-            }}
-            animate={{
-              x: [0, 150, -100, 120, -80, 60, -120, 0],
-              y: [0, -100, 130, -70, 110, -50, 80, 0],
-              scale: [1, 1.3, 0.75, 1.2, 0.8, 1.25, 0.85, 1],
-              borderRadius: ["50%", "35% 65% 55% 45%", "60% 40% 35% 65%", "45% 55% 65% 35%", "65% 35% 45% 55%", "40% 60% 55% 45%", "55% 45% 35% 65%", "50%"],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          {/* Cyan-400 / blue-300 blob */}
-          <motion.div
-            className="absolute h-[400px] w-[400px] rounded-full opacity-25 blur-3xl"
-            style={{
-              top: "35%",
-              right: "5%",
-              background:
-                "radial-gradient(circle, rgba(34, 211, 238, 0.5) 0%, rgba(147, 197, 253, 0.3) 45%, transparent 70%)",
-            }}
-            animate={{
-              x: [0, -120, 80, -100, 60, -140, 90, 0],
-              y: [0, 110, -80, 60, -120, 40, -90, 0],
-              scale: [1, 0.8, 1.25, 0.85, 1.2, 0.75, 1.15, 1],
-              borderRadius: ["50%", "55% 45% 40% 60%", "40% 60% 65% 35%", "60% 40% 45% 55%", "35% 65% 55% 45%", "65% 35% 40% 60%", "45% 55% 60% 40%", "50%"],
-            }}
-            transition={{
-              duration: 7,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          {/* Blue-400 / cyan blob */}
-          <motion.div
-            className="absolute h-[350px] w-[350px] rounded-full opacity-20 blur-3xl"
-            style={{
-              bottom: "10%",
-              left: "35%",
-              background:
-                "radial-gradient(circle, rgba(96, 165, 250, 0.5) 0%, rgba(34, 211, 238, 0.25) 50%, transparent 70%)",
-            }}
-            animate={{
-              x: [0, 100, -130, 70, -90, 110, -60, 0],
-              y: [0, -80, 60, -110, 40, -70, 100, 0],
-              scale: [1, 1.2, 0.8, 1.3, 0.75, 1.15, 0.9, 1],
-              borderRadius: ["50%", "65% 35% 50% 50%", "35% 65% 45% 55%", "50% 50% 35% 65%", "45% 55% 65% 35%", "60% 40% 50% 50%", "40% 60% 45% 55%", "50%"],
-            }}
-            transition={{
-              duration: 9,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          {/* Small bright cyan-400 accent blob */}
-          <motion.div
-            className="absolute h-[250px] w-[250px] rounded-full opacity-20 blur-3xl"
-            style={{
-              top: "20%",
-              right: "30%",
-              background:
-                "radial-gradient(circle, rgba(34, 211, 238, 0.5) 0%, rgba(59, 130, 246, 0.2) 50%, transparent 70%)",
-            }}
-            animate={{
-              x: [0, -90, 120, -60, 100, -110, 70, 0],
-              y: [0, 70, -100, 90, -60, 80, -110, 0],
-              scale: [1, 1.25, 0.8, 1.15, 0.85, 1.3, 0.75, 1],
-              borderRadius: ["50%", "40% 60% 60% 40%", "60% 40% 35% 65%", "50% 50% 60% 40%", "35% 65% 45% 55%", "55% 45% 40% 60%", "45% 55% 55% 45%", "50%"],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        </div>
-
+        <AnimatedBlobs />
         <InteractiveGridBackground />
 
         <div className="relative z-10 flex flex-1 items-center justify-center px-4 pt-16">
