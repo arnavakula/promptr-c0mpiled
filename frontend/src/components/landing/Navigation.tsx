@@ -14,7 +14,8 @@ export function Navigation() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -61,7 +62,7 @@ export function Navigation() {
                 Login
               </button>
               <button
-                onClick={() => router.push("/login")}
+                onClick={() => router.push("/signup")}
                 className="px-6 py-2 bg-black text-white rounded-full text-sm hover:bg-gray-800 transition-colors"
               >
                 Sign Up
