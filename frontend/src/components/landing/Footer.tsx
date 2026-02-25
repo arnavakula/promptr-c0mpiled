@@ -5,7 +5,7 @@ import { Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-black text-white py-12 border-t border-gray-800 mt-auto">
+    <footer className="bg-black text-white py-6 border-t border-gray-800 mt-auto">
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <motion.img
